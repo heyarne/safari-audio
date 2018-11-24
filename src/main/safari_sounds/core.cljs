@@ -9,29 +9,42 @@
 
 (re-frame/reg-event-fx
  :play-sound
- (fn play-sound [coeffects [_ sound-url]]
+ (fn play-sound [_ [_ sound-url]]
    {:audio/play sound-url}))
+
+(re-frame/reg-event-fx
+ :pause-sound
+ (fn pause-sound [_ _]
+   {:audio/pause nil}))
+
+(defn dispatch [event & {:keys [sync?]}]
+  (fn [e]
+    (.preventDefault e)
+    (if sync?
+      (re-frame/dispatch-sync event)
+      (re-frame/dispatch event))))
 
 ;; views
 
 (defn player []
-  (let [event [:play-sound "./100038__soundbytez__saz-birds-hyena.mp3"]]
-    [:span
-     [:a {:href "#"
-          :on-click (fn [e]
-                      (.preventDefault e)
-                      (re-frame/dispatch event))} "Play sound"]
-     " "
-     [:a {:href "#"
-          :on-click (fn [e]
-                      (.preventDefault e)
-                      (re-frame/dispatch-sync event))} "Play sound (sync)"]]))
+  (let [play [:play-sound "./100038__soundbytez__saz-birds-hyena.mp3"]
+        pause [:pause-sound]]
+    [:p
+     [:span
+      [:a {:href "#" :on-click (dispatch play)} "Play sound"]
+      " "
+      [:a {:href "#" :on-click (dispatch play :sync? true)} "Play sound (sync)"]]
+     [:br]
+     [:span
+      [:a {:href "#" :on-click (dispatch pause)} "Pause sound"]
+      " "
+      [:a {:href "#" :on-click (dispatch pause :sync? true)} "Pause sound (sync)"]]]))
 
 (defn main-view []
   [:div
    [:h1 "Safari Sounds"]
    [:p "This is a minimalistic example to reproduce the buggy audio behavior found in airsonic-ui as per commit a6b14d6. If the sound below is playing it should be fixed."]
-   [:p [player]]
+   [player]
    [:p.smaller "Sound taken from freesound.org: "
     [:a {:href "https://freesound.org/people/soundbytez/sounds/100038/"
          :target "_blank"} "saz-birds-hyena by soundbytez"]]])
