@@ -1,6 +1,6 @@
 # Safari Sounds
 
-This is an investigation of messed up audio handling in safari that. I noticed it while working on [airsonic-ui](https://github.com/heyarne/airsonic-ui).
+This is an investigation of messed up audio handling in safari that I noticed while working on [airsonic-ui](https://github.com/heyarne/airsonic-ui).
 
 ## Development
 
