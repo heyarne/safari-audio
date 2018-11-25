@@ -17,6 +17,8 @@
  (fn pause-sound [_ _]
    {:audio/pause nil}))
 
+(re-frame/reg-event-fx :audio/update (fn [_ _])) ;; ← no-op to stop warnings for unhandled event 
+
 (defn dispatch [event & {:keys [sync?]}]
   (fn [e]
     (.preventDefault e)
